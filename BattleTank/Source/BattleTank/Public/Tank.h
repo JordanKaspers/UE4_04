@@ -9,6 +9,7 @@
 class UTankBarrel;
 class UTankTurret;
 class UTankAimingComponent;
+class UTankMovementComponent;
 class AProjectile;
 
 UCLASS()
@@ -31,6 +32,9 @@ public:
 protected:
   UTankAimingComponent* TankAimingComponent = nullptr;
 
+  UPROPERTY(BlueprintReadOnly)
+  UTankMovementComponent* TankMovementComponent = nullptr;
+
 private:
 	// Sets default values for this pawn's properties
 	ATank();
@@ -52,9 +56,7 @@ private:
 
   //  Local barrel reference for spawning projectile
   UTankBarrel* Barrel = nullptr;
-
   
-
   double LastFireTime = 0;
 	
 };
