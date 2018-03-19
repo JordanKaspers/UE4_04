@@ -17,50 +17,40 @@ UTankAimingComponent::UTankAimingComponent()
 
 }
 
-void UTankAimingComponent::SetBarrelReference(UTankBarrel* BarrelToSet)
+void UTankAimingComponent::Initialise(UTankBarrel* BarrelToSet, UTankTurret* TurretToSet)
 {
-  if (!BarrelToSet) { return; }
   Barrel = BarrelToSet;
-}
-
-void UTankAimingComponent::SetTurretReference(UTankTurret* TurretToSet)
-{
-  if (!TurretToSet) { return; }
   Turret = TurretToSet;
 }
 
 void UTankAimingComponent::AimAt(FVector HitLocation, float LaunchSpeed)
 {
-  if (!Barrel)
-  {
-    return;
-  }
-  else
-  {
-    FVector OutLaunchVelocity;
-    FVector StartLocation = Barrel->GetSocketLocation(FName("Projectile"));
-    bool bHaveAimSolution = (UGameplayStatics::SuggestProjectileVelocity(
-      this,
-      OutLaunchVelocity,
-      StartLocation,
-      HitLocation,
-      LaunchSpeed,
-      false,
-      0,
-      0,
-      ESuggestProjVelocityTraceOption::DoNotTrace));
+  if (!Barrel) { return; }
 
-    if(bHaveAimSolution)
-    {
-      auto AimDirection = OutLaunchVelocity.GetSafeNormal();
-      MoveBarrelTowards(AimDirection);
-    }
-    //  If no solution found, do nothing
+  FVector OutLaunchVelocity;
+  FVector StartLocation = Barrel->GetSocketLocation(FName("Projectile"));
+  bool bHaveAimSolution = (UGameplayStatics::SuggestProjectileVelocity(
+    this,
+    OutLaunchVelocity,
+    StartLocation,
+    HitLocation,
+    LaunchSpeed,
+    false,
+    0,
+    0,
+    ESuggestProjVelocityTraceOption::DoNotTrace));
+
+  if(bHaveAimSolution)
+  {
+    auto AimDirection = OutLaunchVelocity.GetSafeNormal();
+    MoveBarrelTowards(AimDirection);
   }
+  //  If no solution found, do nothing
 }
 
 void UTankAimingComponent::MoveBarrelTowards(FVector AimDirection)
 {
+  if (!Barrel || !Turret) { return; }
   // Work-out difference between current barrel rotation, and AimDirection
   auto BarrelRotator = Barrel->GetForwardVector().Rotation();
   auto AimAsRotator = AimDirection.Rotation();
