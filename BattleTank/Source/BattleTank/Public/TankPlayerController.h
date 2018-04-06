@@ -27,6 +27,11 @@ protected:
 
 private:
 
+  virtual void SetPawn(APawn* InPawn) override;
+
+  UFUNCTION()
+  void OnPossessedTankDeath();
+
   // Returns an OUT parameter, true if hit landscape
   bool GetSightRayHitLocation(FVector& OutHitLocation) const;
 
